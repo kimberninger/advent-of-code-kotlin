@@ -3,11 +3,8 @@ fun interface PasswordGenerator {
 }
 
 fun main() {
-    fun solution(input: List<String>, initialPosition: Int = 50, dialSize: Int = 100, passwordGenerator: PasswordGenerator): Int {
-        var position = initialPosition
-        var password = 0
-
-        input.forEach { line ->
+    fun solution(input: List<String>, initialPosition: Int = 50, dialSize: Int = 100, passwordGenerator: PasswordGenerator) =
+        input.fold(initialPosition to 0) { (position, password), line ->
             val direction = line.take(1)
             val amount = line.drop(1).toInt()
 
@@ -16,7 +13,7 @@ fun main() {
 
             val remainingAmount = amount % dialSize
 
-            position = if (direction == "L") {
+            val newPosition = if (direction == "L") {
                 if (position == remainingAmount) zeroHits++
                 if (position in 1..<remainingAmount) zeroPasses++
                 (position - remainingAmount).mod(dialSize)
@@ -26,11 +23,8 @@ fun main() {
                 (position + remainingAmount).mod(dialSize)
             }
 
-            password += passwordGenerator(zeroHits, zeroPasses)
-        }
-
-        return password
-    }
+            newPosition to password + passwordGenerator(zeroHits, zeroPasses)
+        }.second
 
     fun part1(input: List<String>): Int {
         return solution(input) { zeroHits, _ -> zeroHits }
