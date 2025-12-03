@@ -3,27 +3,36 @@ fun interface PasswordGenerator {
 }
 
 fun main() {
+    fun updatePosition(dialSize: Int, position: Int, direction: Char, amount: Int): Triple<Int, Int, Int> {
+        val turningFactor = if (direction == 'L') -1 else 1
+        val newPosition = (position + turningFactor * amount).mod(dialSize)
+
+        val zeroHits = when (direction) {
+            'L' if position == amount -> 1
+            'R' if position + amount == dialSize -> 1
+            else -> 0
+        }
+
+        val zeroPasses = when (direction) {
+            'L' if position in 1..<amount -> 1
+            'R' if position + amount > dialSize -> 1
+            else -> 0
+        }
+
+        return Triple(newPosition, zeroHits, zeroPasses)
+    }
+
     fun solution(input: List<String>, initialPosition: Int = 50, dialSize: Int = 100, passwordGenerator: PasswordGenerator) =
         input.fold(initialPosition to 0) { (position, password), line ->
-            val direction = line.take(1)
+            val direction = line[0]
             val amount = line.drop(1).toInt()
 
-            var zeroHits = 0
-            var zeroPasses = amount / dialSize
-
+            val fullRotations = amount / dialSize
             val remainingAmount = amount % dialSize
 
-            val newPosition = if (direction == "L") {
-                if (position == remainingAmount) zeroHits++
-                if (position in 1..<remainingAmount) zeroPasses++
-                (position - remainingAmount).mod(dialSize)
-            } else {
-                if (position + remainingAmount == dialSize) zeroHits++
-                if (position + remainingAmount > dialSize) zeroPasses++
-                (position + remainingAmount).mod(dialSize)
-            }
+            val (newPosition, zeroHits, zeroPasses) = updatePosition(dialSize, position, direction, remainingAmount)
 
-            newPosition to password + passwordGenerator(zeroHits, zeroPasses)
+            newPosition to password + passwordGenerator(zeroHits, fullRotations + zeroPasses)
         }.second
 
     fun part1(input: List<String>): Int {
