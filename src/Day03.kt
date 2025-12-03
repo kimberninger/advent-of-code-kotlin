@@ -1,14 +1,11 @@
-import kotlin.math.pow
-
 fun main() {
-    fun solution(input: List<String>, digits: Int) = input.flatMap { line ->
-        var remaining = line
-        digits.downTo(1).map { index ->
+    fun solution(input: List<String>, digits: Int) = input.sumOf { line ->
+        (digits downTo 1).fold(line to 0L) { (remaining, joltage), index ->
             val digit = remaining.dropLast(index - 1).max()
-            remaining = remaining.drop(remaining.indexOf(digit) + 1)
-            10.0.pow(index - 1).toLong() * digit.digitToInt()
-        }
-    }.sum()
+            val newRemaining = remaining.drop(remaining.indexOf(digit) + 1)
+            newRemaining to joltage * 10 + digit.digitToInt()
+        }.second
+    }
 
     fun part1(input: List<String>) = solution(input, 2)
 
