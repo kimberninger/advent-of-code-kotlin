@@ -1,32 +1,43 @@
+fun interface PasswordGenerator {
+    operator fun invoke(zeroHits: Int, zeroPasses: Int): Int
+}
+
 fun main() {
-    fun solution(input: List<String>, initialPosition: Int = 50, dialSize: Int = 100, chunkSize: (Int) -> Int): Int {
+    fun solution(input: List<String>, initialPosition: Int = 50, dialSize: Int = 100, passwordGenerator: PasswordGenerator): Int {
         var position = initialPosition
         var password = 0
 
-        for (line in input) {
+        input.forEach { line ->
             val direction = line.take(1)
             val amount = line.drop(1).toInt()
 
-            (1..amount).chunked(chunkSize(amount)).forEach { chunk ->
-                when (direction) {
-                    "L" -> position = (position - chunk.size) % dialSize
-                    "R" -> position = (position + chunk.size) % dialSize
-                }
+            var zeroHits = 0
+            var zeroPasses = amount / dialSize
 
-                if (position == 0) {
-                    password += 1
-                }
+            val remainingAmount = amount % dialSize
+
+            position = if (direction == "L") {
+                if (position == remainingAmount) zeroHits++
+                if (position in 1..<remainingAmount) zeroPasses++
+                (position - remainingAmount).mod(dialSize)
+            } else {
+                if (position + remainingAmount == dialSize) zeroHits++
+                if (position + remainingAmount > dialSize) zeroPasses++
+                (position + remainingAmount).mod(dialSize)
             }
+
+            password += passwordGenerator(zeroHits, zeroPasses)
         }
+
         return password
     }
 
     fun part1(input: List<String>): Int {
-        return solution(input) { it }
+        return solution(input) { zeroHits, _ -> zeroHits }
     }
 
     fun part2(input: List<String>): Int {
-        return solution(input) { 1 }
+        return solution(input) { zeroHits, zeroPasses -> zeroHits + zeroPasses }
     }
 
     val testInput = readInput("Day01_test")
