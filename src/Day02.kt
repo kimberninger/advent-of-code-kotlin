@@ -1,19 +1,18 @@
-import java.util.regex.Pattern
-
 fun main() {
-    fun solution(input: List<String>, pattern: Pattern): Long {
-        val matcher = pattern.asMatchPredicate()
+    fun solution(input: List<String>, maxRepetitions: Int = 2): Long = input.first().split(",").sumOf { range ->
+        val (first, second) = range.split("-").map { it.toLong() }
 
-        return input.first().split(",").sumOf { range ->
-            val (first, second) = range.split("-").map { it.toLong() }
-
-            (first..second).filter { matcher.test(it.toString()) }.sum()
-        }
+        (first..second).filter {
+            val searchString = "$it$it".dropLast(1)
+            val numberString = it.toString()
+            val index = searchString.lastIndexOf(numberString, numberString.length / 2)
+            index > 0 && numberString.length / (numberString.length gcd index) in 2..maxRepetitions
+        }.sum()
     }
 
-    fun part1(input: List<String>) = solution(input, Pattern.compile("^(.*)\\1$"))
+    fun part1(input: List<String>) = solution(input, 2)
 
-    fun part2(input: List<String>) = solution(input, Pattern.compile("^(.*)\\1+$"))
+    fun part2(input: List<String>) = solution(input, Int.MAX_VALUE)
 
     check(part1(readInput("Day02_test")) == 1227775554L)
     check(part2(readInput("Day02_test")) == 4174379265L)
