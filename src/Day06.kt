@@ -56,7 +56,7 @@ fun main() {fun part1(input: List<String>): Long {
             Operator.parse(grid.last()[column])?.also { operator ->
                 val result = when (operator) {
                     Operator.PLUS -> operands.dropWhile { it == 0L }.sum()
-                    Operator.TIMES -> operands.dropWhile { it == 0L }.reduce(Long::times)
+                    Operator.TIMES -> operands.dropWhile { it == 0L }.product()
                 }
 
                 results.add(result)

@@ -28,3 +28,6 @@ infix fun Int.gcd(other: Int): Int = when {
     other == 0 -> this
     else -> other.gcd(this % other)
 }
+
+fun Iterable<Int>.product() = this.fold(1, Int::times)
+fun Iterable<Long>.product() = this.fold(1, Long::times)
