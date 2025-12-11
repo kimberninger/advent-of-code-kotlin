@@ -5,10 +5,7 @@ fun main() {
             .toMutableList()
 
         val rows = input.drop(1).map { line ->
-            line
-                .withIndex()
-                .filter { (_, symbol) -> symbol == '^' }
-                .map { (index, _) -> index }
+            line.mapIndexedNotNull { index, symbol -> index.takeIf { symbol == '^' } }
         }
 
         var hits = 0
@@ -28,10 +25,7 @@ fun main() {
         val initialBeam = input.first().map { symbol -> if (symbol == 'S') 1L else 0L }
 
         val rows = input.drop(1).map { line ->
-            line
-                .withIndex()
-                .filter { (_, symbol) -> symbol == '^' }
-                .map { (index, _) -> index }
+            line.mapIndexedNotNull { index, symbol -> index.takeIf { symbol == '^' } }
         }
 
         val beams = rows.fold(initialBeam) { currentBeams, splitters ->

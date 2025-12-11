@@ -6,9 +6,7 @@ data class FactoryMachine(val targetConfiguration: Set<Int>, val buttons: List<S
         val pattern = "\\[(?<target>[.#]+)] (?<buttons>\\(\\d+(?:,\\d+)*\\)(?: \\(\\d+(?:,\\d+)*\\))*) \\{(?<joltage>\\d+(?:,\\d+)*)}".toRegex()
         fun parse(manual: String) = pattern.matchEntire(manual)?.let { matchResult ->
             val target = matchResult.groups["target"]?.value
-                ?.withIndex()
-                ?.filter { (_, symbol) -> symbol == '#' }
-                ?.map { (index, _) -> index }
+                ?.mapIndexedNotNull { index, symbol -> index.takeIf { symbol == '#' } }
                 ?.toSet()
                 ?: throw IllegalArgumentException("target configuration could not be parsed $manual")
 

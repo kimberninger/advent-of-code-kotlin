@@ -67,9 +67,7 @@ class Circuits {
 fun main() {
     fun part1(input: List<String>, connectionsToEstablish: Int): Int {
         val nodes = input
-            .map(Node::parse)
-            .withIndex()
-            .map { (index, node) -> IdentifiableNode(index, node) }
+            .mapIndexed { index, line -> IdentifiableNode(index, Node.parse(line)) }
 
         val connections = buildList {
             for (firstIndex in 0..<nodes.size) {
@@ -95,9 +93,7 @@ fun main() {
 
     fun part2(input: List<String>): Long {
         val nodes = input
-            .map(Node::parse)
-            .withIndex()
-            .map { (index, node) -> IdentifiableNode(index, node) }
+            .mapIndexed { index, line -> IdentifiableNode(index, Node.parse(line)) }
 
         val connections = buildList {
             for (firstIndex in 0..<nodes.size) {
