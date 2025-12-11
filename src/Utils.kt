@@ -24,9 +24,9 @@ fun Any?.println() = println(this)
  * Computes the greatest common divisor of two natural numbers
  */
 infix fun Int.gcd(other: Int): Int = when {
-    other > this -> other.gcd(other)
+    other > this -> other gcd this
     other == 0 -> this
-    else -> other.gcd(this % other)
+    else -> other gcd (this % other)
 }
 
 fun Iterable<Int>.product() = this.fold(1, Int::times)
