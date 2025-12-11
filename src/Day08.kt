@@ -65,18 +65,16 @@ class Circuits {
 }
 
 fun main() {
-    fun part1(input: List<String>, connectionsToEstablish: Int): Int {
-        val nodes = input
-            .mapIndexed { index, line -> IdentifiableNode(index, Node.parse(line)) }
+    fun parseConnections(input: List<String>): List<Connection> {
+        val nodes = input.mapIndexed { index, line -> IdentifiableNode(index, Node.parse(line)) }
 
-        val connections = buildList {
-            for (firstIndex in 0..<nodes.size) {
-                for (secondIndex in firstIndex + 1..<nodes.size) {
-                    add(Connection(nodes[firstIndex], nodes[secondIndex]))
-                }
-            }
+        return nodes.flatMapIndexed { index, node1 ->
+            nodes.drop(index + 1).map { node2 -> Connection(node1, node2) }
         }.sortedBy { it.distance }
+    }
 
+    fun part1(input: List<String>, connectionsToEstablish: Int): Int {
+        val connections = parseConnections(input)
         val circuits = Circuits()
 
         var establishedConnections = 0
@@ -92,17 +90,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Long {
-        val nodes = input
-            .mapIndexed { index, line -> IdentifiableNode(index, Node.parse(line)) }
-
-        val connections = buildList {
-            for (firstIndex in 0..<nodes.size) {
-                for (secondIndex in firstIndex + 1..<nodes.size) {
-                    add(Connection(nodes[firstIndex], nodes[secondIndex]))
-                }
-            }
-        }.sortedBy { it.distance }
-
+        val connections = parseConnections(input)
         val circuits = Circuits()
 
         var lastConnection: Connection? = null
@@ -113,7 +101,7 @@ fun main() {
                 lastConnection = connection
             }
         }
-        return lastConnection?.secondNode?.x?.let { lastConnection.firstNode.x.times(it) } ?: 0
+        return lastConnection?.let { it.firstNode.x * it.secondNode.x } ?: 0
     }
 
     check(part1(readInput("Day08_test"), connectionsToEstablish = 10) == 40)
