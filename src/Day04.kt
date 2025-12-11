@@ -1,43 +1,34 @@
 fun main() {
+    fun countNeighbors(grid: List<List<Char>>, row: Int, column: Int) = (row - 1..row + 1).sumOf { i ->
+        (column - 1..column + 1).count { j ->
+            i in 0..<grid.size && j in 0..<grid[i].size &&
+            grid[i][j] == '@' && (i != row || j != column)
+        }
+    }
+
     fun solution(input: List<String>, maxSteps: Int): Int {
-        var step = 0
+        var grid = input.map { it.toList() }
+        var totalRemoved = 0
 
-        val mutableInput = input.toMutableList()
-        var result = 0
-        var canBeRemoved = 1
-
-        while (step++ < maxSteps && canBeRemoved > 0) {
-            val cellsToRemove = mutableListOf<Pair<Int, Int>>()
-            val height = mutableInput.size
-            for ((row, line) in mutableInput.withIndex()) {
-                val width = line.length
-                for ((column, cell) in line.withIndex()) {
-                    var neighbors = 0
-                    for (i in row - 1..row + 1) {
-                        for (j in column - 1..column + 1) {
-                            if (i in 0..<height) {
-                                if (j in 0..<width) {
-                                    if (mutableInput[i][j] == '@' && (i != row || j != column)) {
-                                        neighbors++
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (cell == '@' && neighbors < 4) {
-                        cellsToRemove.add(row to column)
-                    }
+        repeat(maxSteps) {
+            val cellsToRemove = grid.flatMapIndexed { row, line ->
+                line.mapIndexedNotNull { column, cell ->
+                    (row to column).takeIf { cell == '@' && countNeighbors(grid, row, column) < 4 }
                 }
             }
-            canBeRemoved = cellsToRemove.size
-            for ((row, column) in cellsToRemove) {
-                mutableInput[row] = mutableInput[row].replaceRange(column, column + 1, ".")
+
+            if (cellsToRemove.isEmpty()) return totalRemoved
+
+            grid = grid.mapIndexed { row, line ->
+                line.mapIndexed { column, cell ->
+                    if ((row to column) in cellsToRemove) '.' else cell
+                }
             }
 
-            cellsToRemove.clear()
-            result += canBeRemoved
+            totalRemoved += cellsToRemove.size
         }
-        return result
+
+        return totalRemoved
     }
 
     fun part1(input: List<String>) = solution(input, 1)
