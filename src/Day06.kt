@@ -20,14 +20,15 @@ enum class Operator {
     }
 }
 
-fun main() {fun part1(input: List<String>): Long {
+fun main() {
+    fun part1(input: List<String>): Long {
         val operands = input.dropLast(1).map { line -> line.trim().split(Regex("\\s+")).map { it.toLong() } }
         val operators = input.last().trim().split(Regex("\\s+")).map(Operator::parse).requireNoNulls()
 
         val results = operands.reduce { result, row ->
             row
-                .zip(operators) { operand, operator -> operator(operand)}
-                .zip(result) { operation, operand -> operation(operand)}
+                .zip(operators) { operand, operator -> operator(operand) }
+                .zip(result) { operation, operand -> operation(operand) }
         }
 
         return results.sum()

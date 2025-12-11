@@ -10,7 +10,7 @@ open class Node(val x: Long, val y: Long, val z: Long) {
     }
 }
 
-class IdentifiableNode(val id: Int, x: Long, y: Long, z: Long): Node(x, y, z) {
+class IdentifiableNode(val id: Int, x: Long, y: Long, z: Long) : Node(x, y, z) {
     constructor(id: Int, node: Node) : this(id, node.x, node.y, node.z)
 }
 
@@ -42,15 +42,15 @@ class Circuits {
     operator fun contains(connection: Connection) = circuits.any { connection in it }
 
     operator fun plusAssign(connection: Connection) {
-        val connectedCircuits = circuits.filter { connection.firstNode.id in it || connection.secondNode.id in it}
+        val connectedCircuits = circuits.filter { connection.firstNode.id in it || connection.secondNode.id in it }
         when (connectedCircuits.size) {
             0 -> circuits.add(Circuit().also { it += connection })
             1 -> connectedCircuits.first() += connection
             2 -> {
                 circuits.removeAll(connectedCircuits)
 
-                val combinedNodeIds = connectedCircuits.fold(emptySet<Int>()) {
-                    acc, x -> acc.union(x.nodeIds)
+                val combinedNodeIds = connectedCircuits.fold(emptySet<Int>()) { acc, x ->
+                    acc.union(x.nodeIds)
                 }
 
                 val combinedCircuit = Circuit(combinedNodeIds)
@@ -71,7 +71,7 @@ fun main() {
 
         val connections = buildList {
             for (firstIndex in 0..<nodes.size) {
-                for (secondIndex in firstIndex+1..<nodes.size) {
+                for (secondIndex in firstIndex + 1..<nodes.size) {
                     add(Connection(nodes[firstIndex], nodes[secondIndex]))
                 }
             }
@@ -97,7 +97,7 @@ fun main() {
 
         val connections = buildList {
             for (firstIndex in 0..<nodes.size) {
-                for (secondIndex in firstIndex+1..<nodes.size) {
+                for (secondIndex in firstIndex + 1..<nodes.size) {
                     add(Connection(nodes[firstIndex], nodes[secondIndex]))
                 }
             }
@@ -116,10 +116,10 @@ fun main() {
         return lastConnection?.secondNode?.x?.let { lastConnection.firstNode.x.times(it) } ?: 0
     }
 
-    check(part1(readInput("Day08_test"), connectionsToEstablish=10) == 40)
+    check(part1(readInput("Day08_test"), connectionsToEstablish = 10) == 40)
     check(part2(readInput("Day08_test")) == 25272L)
 
     val input = readInput("Day08")
-    part1(input, connectionsToEstablish=1000).println()
+    part1(input, connectionsToEstablish = 1000).println()
     part2(input).println()
 }

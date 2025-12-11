@@ -12,8 +12,8 @@ fun main() {
         for (splitters in rows) {
             for (splitter in splitters) {
                 hits += beams[splitter]
-                beams[splitter-1] = 1
-                beams[splitter+1] = 1
+                beams[splitter - 1] = 1
+                beams[splitter + 1] = 1
                 beams[splitter] = 0
             }
         }
@@ -31,8 +31,8 @@ fun main() {
         val beams = rows.fold(initialBeam) { currentBeams, splitters ->
             val newBeams = currentBeams.toMutableList()
             for (splitter in splitters) {
-                newBeams[splitter-1] += currentBeams[splitter]
-                newBeams[splitter+1] += currentBeams[splitter]
+                newBeams[splitter - 1] += currentBeams[splitter]
+                newBeams[splitter + 1] += currentBeams[splitter]
                 newBeams[splitter] = 0
             }
             newBeams

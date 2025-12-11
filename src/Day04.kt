@@ -31,7 +31,7 @@ fun main() {
             }
             canBeRemoved = cellsToRemove.size
             for ((row, column) in cellsToRemove) {
-                mutableInput[row] = mutableInput[row].replaceRange(column, column+1, ".")
+                mutableInput[row] = mutableInput[row].replaceRange(column, column + 1, ".")
             }
 
             cellsToRemove.clear()
